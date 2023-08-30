@@ -61,6 +61,7 @@ import akka.util.ByteString
 
   import TLSActor._
 
+  private val isOtoroshiDev = sys.env.get("OTOROSHI_DEV").contains("true")
   private var unwrapPutBackCounter: Int = 0
   protected val outputBunch = new OutputBunch(outputCount = 2, self, this)
   outputBunch.markAllOutputs()
@@ -401,7 +402,7 @@ import akka.util.ByteString
     val result = engine.unwrap(transportInBuffer, userOutBuffer)
     if (ignoreOutput) userOutBuffer.clear()
     lastHandshakeStatus = result.getHandshakeStatus
-    // println("otoroshi-do-unwrap")
+    if (isOtoroshiDev) println("custom tls otoroshi-do-unwrap")
     if (tracing)
       log.debug(
         s"unwrap: status=${result.getStatus} handshake=$lastHandshakeStatus remaining=${transportInBuffer.remaining} out=${userOutBuffer
